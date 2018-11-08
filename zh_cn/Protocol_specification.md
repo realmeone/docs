@@ -2,7 +2,7 @@
 
 ## 目的
 
-RO消息传输协议（RO message transfer protocol = ROMTP）是用于传输RO网络内部消息的基于TCP/IP的应用层协议。主要的应用场景在RO网络的P2P节点之间的传输。节点服务的默认端口为50500。我们希望通过ROMTP，能够使得RO网络的P2P节点能够快速的共享消息，提升消息处理速度，从而提升整个P2P节点的效率。当然，我们秉承开放心态，希望大家积极帮助我们改进优化协议，同时也能基于ROMTP扩展出更多更好更优秀的P2P消息传输协议。
+RO消息传输协议（RO message transfer protocol = ROMTP）是用于传输RO网络内部消息的基于TCP/IP的应用层协议。主要的应用场景在RO网络的P2P节点之间的传输。我们希望通过ROMTP，能够使得RO网络的P2P节点能够快速的共享消息，提升消息处理速度，从而提升整个P2P节点的效率。当然，我们秉承开放心态，希望大家积极帮助我们改进优化协议，同时也能基于ROMTP扩展出更多更好更优秀的P2P消息传输协议。
 
 ## 定义
 
@@ -27,7 +27,7 @@ RO消息传输协议（RO message transfer protocol = ROMTP）是用于传输RO�
 | Version | 4 | Int | 是 | 消息的版本，默认是1 |
 | Type | 4 | Int | 是 |消息类型，例如Hello、Ping、Pong，默认是hello |
 | Content-Checksum | 4 | ByteArray | 否 | 内容的校验码，为内容的sha256两次的前4个字节 |
-| Content-Type | 4 | Int | 否 | 内容的类型，例如binary代表二进制，text代表文本， protobuf代表了protobuf进行的编码，默认是protobuf |
+| Content-Type | 4 | Int | 否 | 内容的类型，例如binary代表二进制，text代表文本，还有zlib、protobuf等等 |
 | Content-Length | 4 | Int | 否 | 内容的字节长度 |
 | Content | ? | ByteArray | 否 | 内容 |
 
@@ -39,9 +39,9 @@ RO消息传输协议（RO message transfer protocol = ROMTP）是用于传输RO�
 
 如果一条消息没有校验码，即是只有消息版本和消息类型，则后续内容不会进行解析。这样的消息我们称之为静态消息，反之为动态消息。通常的静态消息有Hello，Ping，Pong等。
 
-#### 内容类型
+#### 内容类型（Content-Type）
 
-消息的内容默认采用的是Protobuf进行串行化。节点之间也可以定义不同的串行算法，但是，如果节点不能识别当前串行算法，则会丢弃该信息。
+节点之间也可以定义不同的串行算法，但是，如果节点不能识别当前串行算法，则会丢弃该信息。所以在连接到一个节点的时候，应该发送他所能接收的内容类型，如果没有发送，则按照默认的二进制进行传输。
 
 ### 请求和响应（Request & Response）
 
